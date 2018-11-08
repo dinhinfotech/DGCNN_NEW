@@ -67,7 +67,7 @@ IMDBMULTI)
   ;;
 esac
 
-CUDA_VISIBLE_DEVICES=${GPU} python main_preparing.py \
+CUDA_VISIBLE_DEVICES=${GPU} python main.py \
     -seed 1 \
     -data $DATA \
     -num_epochs $num_epochs \
