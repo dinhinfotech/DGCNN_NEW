@@ -166,6 +166,7 @@ if __name__ == '__main__':
         parameters_save = []
         random_idx = [int(idx) for idx in ud.load_list_from_file(os.getcwd() + shuffle_idx_folder + cmd_args.data + "_" + str(shuffle_idx))]
         graphs_shuffle = [graphs[idx] for idx in random_idx]
+        graphs=graphs_shuffle
         labels = [g.label for g in graphs]
         
         fold_idx = 1
@@ -191,18 +192,22 @@ if __name__ == '__main__':
                 patience_count = 0                 
                 for epoch in range(cmd_args.num_epochs):
                     classifier.train()
-                    avg_loss, _ = loop_dataset(tr_graphs, classifier, tr_idxes, optimizer=optimizer)
-                    #print('\033[92maverage training of epoch %d: loss %.5f acc %.5f\033[0m' % (epoch, avg_loss[0], avg_loss[1]))
+                    avg_loss,_ = loop_dataset(tr_graphs, classifier, tr_idxes, optimizer=optimizer)
+                    #print(avg_loss)
+                    print('\033[92maverage training of epoch %d: loss %.5f acc %.5f\033[0m' % (epoch, avg_loss[0], avg_loss[1]))
         
                     classifier.eval()
-                    vali_loss, vali_acc = loop_dataset(vali_graphs, classifier, vali_idxes)
-                    #print('\033[93maverage validation of epoch %d: loss %.5f acc %.5f\033[0m' % (epoch, validation_loss[0], validation_loss[1]))
-                    
+                    vali_loss,_ = loop_dataset(vali_graphs, classifier, vali_idxes)
+                    vali_acc=vali_loss[1]
+                    #print(vali_loss)
+                    #print('\033[93maverage validation of epoch %d: loss %.5f acc %.5f\033[0m' % (epoch, vali_loss[0], vali_loss[1]))
+                    print('\033[93maverage validation of epoch %d: loss %.5f acc %.5f\033[0m' % (epoch, vali_loss[0], vali_loss[1]))
+
                     if epoch==0:
                         best_loss = vali_loss[0]
                         torch.save(classifier.state_dict(), best_model_path)
                         
-                    if vali_loss[0] < best_loss:
+                    elif vali_loss[0] < best_loss:
                         torch.save(classifier.state_dict(), best_model_path)
                         best_loss = vali_loss[0]
                         patience_count = 0
