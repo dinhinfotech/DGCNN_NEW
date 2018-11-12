@@ -67,3 +67,61 @@ class MLPClassifier(nn.Module):
             return logits, loss, acc
         else:
             return logits
+
+class MLP_RNN_Classifier(nn.Module):
+    def __init__(self, input_size, hidden_size, num_class, with_dropout=False):
+        super(MLP_RNN_Classifier, self).__init__()
+
+        self.hidden_size = hidden_size
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
+        self.i2o = nn.Linear(input_size + hidden_size, num_class)
+        
+        weights_init(self)
+            
+    def forward(self, input, y):        
+        outputs = []
+        for g_idx in range(input.shape[0]):
+            hidden = Variable(torch.zeros(1, self.hidden_size))
+            for i in range(input.shape[1]):
+                combined = torch.cat((input[g_idx][i].view(1,-1), hidden), 1)
+                hidden = self.i2h(combined)
+                hidden = F.relu(hidden)
+                output = self.i2o(combined)
+                output = F.log_softmax(output, dim=1)
+            outputs.append(output[0])            
+
+        y = Variable(y)
+        outputs = torch.stack(outputs)
+        loss = F.nll_loss(outputs, y)
+        pred = outputs.data.max(1, keepdim=True)[1]
+        acc = pred.eq(y.data.view_as(pred)).cpu().sum().item() / float(y.size()[0])
+        return outputs, loss, acc            
+
+class MLP_LSTM_Classifier(nn.Module):
+    def __init__(self, input_size, hidden_size, num_class, with_dropout=False):
+        super(MLP_LSTM_Classifier, self).__init__()
+
+        self.hidden_size = hidden_size
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size)
+        self.i2o = nn.Linear(input_size + hidden_size, num_class)
+        
+        weights_init(self)
+            
+    def forward(self, input, y):
+        outputs = []
+        for g_idx in range(input.shape[0]):
+            hidden = Variable(torch.zeros(1, self.hidden_size))
+            for i in range(input.shape[1]):
+                combined = torch.cat((input[g_idx][i].view(1,-1), hidden), 1)
+                hidden = self.i2h(combined)
+                hidden = F.relu(hidden)
+                output = self.i2o(combined)
+                output = F.log_softmax(output, dim=1)
+            outputs.append(output[0])            
+
+        y = Variable(y)
+        outputs = torch.stack(outputs)
+        loss = F.nll_loss(outputs, y)
+        pred = outputs.data.max(1, keepdim=True)[1]
+        acc = pred.eq(y.data.view_as(pred)).cpu().sum().item() / float(y.size()[0])
+        return outputs, loss, acc        
