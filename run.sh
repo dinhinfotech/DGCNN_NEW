@@ -3,7 +3,7 @@
 # input arguments
 DATA="PROTEINS"  # MUTAG, ENZYMES, NCI1, NCI109, DD, PTC, PROTEINS, COLLAB, IMDBBINARY, IMDBMULTI
 # general settings
-gm=DGCNN_RNN  # model: DGCNN, DGCNN_RNN, DGCNNDeepSets, DGCNN_LSTM,
+gm=DGCNN_RNN  # model: DGCNN, DGCNN_RNN, DGCNN_DS, DGCNN_LSTM,
 gpu_or_cpu=cpu
 GPU=1  # select the GPU number
 CONV_SIZE="32-32-32-1"
