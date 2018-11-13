@@ -10,6 +10,8 @@ import util_dinh as ud
 from sklearn.model_selection import StratifiedKFold
 from final_model import Classifier, loop_dataset
 import shutil
+import gc
+
 
 if __name__ == '__main__':
     random.seed(cmd_args.seed)
@@ -98,6 +100,9 @@ if __name__ == '__main__':
             test_loss, test_acc = loop_dataset(te_graphs, optimal_model, te_idxes)
             with open(results_dir + '/' + str(shuffle_idx), 'a+') as f:
                 f.write(str(test_loss[1]) + '\n')
+                f.flush()
             fold_idx+=1
+            # This is required
+            gc.collect()
         print("--------------------------")
     print("=========================")
