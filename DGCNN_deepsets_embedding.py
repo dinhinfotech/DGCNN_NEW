@@ -102,10 +102,7 @@ class DGCNNDeepSets(nn.Module):
 
         cur_message_layer = torch.cat(cat_message_layers, 1)
 
-        #print("cur_message_layer",cur_message_layer.size())
-
         ''' sortpooling layer '''
-        sort_channel = cur_message_layer[:, -1]
         max_size=max(graph_sizes)
         batch_sortpooling_graphs = torch.zeros(len(graph_sizes), max_size, self.total_latent_dim)
         if isinstance(node_feat.data, torch.cuda.FloatTensor):
@@ -114,7 +111,6 @@ class DGCNNDeepSets(nn.Module):
         batch_sortpooling_graphs = Variable(batch_sortpooling_graphs)
         accum_count = 0
         for i in range(subg_sp.size()[0]):
-            to_sort = sort_channel[accum_count: accum_count + graph_sizes[i]]
             R=torch.cuda.LongTensor(range(accum_count,accum_count + graph_sizes[i]))
             k =  graph_sizes[i]
             sortpooling_graph = cur_message_layer.index_select(0, R)
