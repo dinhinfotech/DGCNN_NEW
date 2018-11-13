@@ -51,11 +51,11 @@ class Classifier(nn.Module):
                             max_lv=cmd_args.max_lv)
         out_dim = cmd_args.out_dim
         if out_dim == 0:
-            if cmd_args.gm == 'DGCNN' or cmd_args.gm == 'DGCNNDS':
+            if cmd_args.gm == 'DGCNN' or cmd_args.gm == 'DGCNN_DS':
                 out_dim = self.s2v.dense_dim
             else:
                 out_dim = cmd_args.latent_dim
-        if cmd_args.gm == 'DGCNN' or cmd_args.gm == 'DGCNNDS':
+        if cmd_args.gm == 'DGCNN' or cmd_args.gm == 'DGCNN_DS':
             self.mlp = MLPClassifier(input_size=out_dim, hidden_size=cmd_args.hidden, num_class=cmd_args.num_class, with_dropout=cmd_args.dropout)
         elif cmd_args.gm == 'DGCNN_RNN':
             self.mlp = MLP_RNN_Classifier(input_size=sum(cmd_args.latent_dim), hidden_size=cmd_args.hidden, num_class=cmd_args.num_class, with_dropout=cmd_args.dropout)
