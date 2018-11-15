@@ -11,7 +11,7 @@ from sklearn.model_selection import StratifiedKFold
 from final_model import Classifier, loop_dataset
 import shutil
 import gc
-
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 if __name__ == '__main__':
     random.seed(cmd_args.seed)
@@ -65,6 +65,7 @@ if __name__ == '__main__':
                 classifier = classifier.cuda()
     
             optimizer = optim.Adam(classifier.parameters(), lr=cmd_args.learning_rate)
+            #scheduler = ReduceLROnPlateau(optimizer, patience=20)
 
             best_loss = None
             patience_count = 0                 
@@ -74,7 +75,7 @@ if __name__ == '__main__':
                 print('\033[92maverage training of epoch %d: loss %.5f acc %.5f\033[0m' % (epoch, avg_loss[0], avg_loss[1]))
     
                 classifier.eval()
-                vali_loss,_ = loop_dataset(vali_graphs, classifier, vali_idxes)                
+                vali_loss,_ = loop_dataset(vali_graphs, classifier, vali_idxes) #
                 print('\033[93maverage validation of epoch %d: loss %.5f acc %.5f\033[0m' % (epoch, vali_loss[0], vali_loss[1]))
 
                 if epoch==0:

@@ -80,7 +80,7 @@ class DGCNNDeepSets(nn.Module):
 
         return h
 
-#Modify this
+#   Modify this
     def deepsets_embedding(self, node_feat, edge_feat, n2n_sp, e2n_sp, subg_sp, graph_sizes, node_degs):
         ''' if exists edge feature, concatenate to node feature vector '''
         if edge_feat is not None:
@@ -124,17 +124,11 @@ class DGCNNDeepSets(nn.Module):
             batch_sortpooling_graphs[i] = sortpooling_graph
             accum_count += graph_sizes[i]
 
-            #Deep sets
-
-        #print("output_dim", self.output_dim)
-        #to_conv1d = batch_sortpooling_graphs #Nick test consider one graph at a time
-        #print ("batch_sortpooling_graphs",batch_sortpooling_graphs.size())
-
-        #print(batch_sortpooling_graphs.size())
+            #call to Deep sets
         return self.model.forward(batch_sortpooling_graphs)
 
-
-    def sortpooling_embedding(self, node_feat, edge_feat, n2n_sp, e2n_sp, subg_sp, graph_sizes, node_degs):
+    #old code
+    def __sortpooling_embedding(self, node_feat, edge_feat, n2n_sp, e2n_sp, subg_sp, graph_sizes, node_degs):
         ''' if exists edge feature, concatenate to node feature vector '''
         if edge_feat is not None:
             input_edge_linear = self.w_e2l(edge_feat)

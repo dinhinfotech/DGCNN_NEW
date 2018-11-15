@@ -23,7 +23,7 @@ class InvariantModel(nn.Module):
         # here I have assumed that x is 2D and the each row is representation of an input, so the following operation
         # will reduce the number of rows to 1, but it will keep the tensor as a 2D tensor.
         #print("x size before sum",x.size())
-        x = torch.sum(x, dim=1, keepdim=True)
+        x = torch.sum(x, dim=1, keepdim=True) #sum
         x=x.reshape((x.size()[0],x.size()[2]))
         #print("x size after sum",x.size())
 
@@ -75,17 +75,24 @@ class SmallPhi(nn.Module):
         #self.fc1 = nn.Linear(self.input_size, self.input_size+step)
         #self.fc2 = nn.Linear(self.input_size+step, self.output_size)
         self.fc1 = nn.Linear(self.input_size, self.output_size)
-        #self.fc2 = nn.Linear(self.output_size, self.output_size)
+        #self.fc2 = nn.Linear(self.input_size+step, self.output_size)
+        #self.fc3 = nn.Linear(self.input_size+(2*step), self.output_size)
+
         self.dropout1=  nn.Dropout(p=0.2)
         self.dropout2=  nn.Dropout(p=0.2)
+        #self.dropout3=  nn.Dropout(p=0.2)
+
 
 
     def forward(self, x: NetIO) -> NetIO:
-        x = self.dropout1(x)
+        #x = self.dropout1(x)
         x = F.relu(self.fc1(x))
-        #x = self.dropout2(x)
+        x = self.dropout2(x)
 
-        #x = F.tanh(self.fc2(x))
+        #x = F.relu(self.fc2(x))
+        #x = self.dropout3(x)
+
+        #x = F.relu(self.fc3(x))
         #x = self.dropout2(x)
 
         return x
@@ -108,18 +115,23 @@ class SmallRho(nn.Module):
         self.fc1 = nn.Linear(self.input_size, self.output_size)
         self.dropout1=  nn.Dropout(p=0.2)
         self.dropout2=  nn.Dropout(p=0.2)
-        #self.fc2 = nn.Linear(self.output_size, self.output_size)
+        self.dropout3=  nn.Dropout(p=0.2)
+        self.fc2 = nn.Linear(self.input_size+step, self.output_size)
+        #self.fc3 = nn.Linear(self.input_size+(2*step), self.output_size)
+
 
     def forward(self, x: NetIO) -> NetIO:
         #x = F.dropout(x)
         #x = F.relu(self.fc1(x))
-        #x = F.dropout(x)
-
+        #x = self.dropout1(x)
         x = F.relu(self.fc1(x))
-        x = self.dropout1(x)
+        x = self.dropout2(x)
 
         #x = self.dropout2(x)
 
-        #x = F.tanh(self.fc2(x))
-        #x = self.dropout2(x)
+        #x = F.relu(self.fc2(x))
+        #x = self.dropout3(x)
+
+        #x = F.relu(self.fc3(x))
+        #x = self.dropout3(x)
         return x

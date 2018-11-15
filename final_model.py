@@ -118,7 +118,7 @@ class Classifier(nn.Module):
 
         return self.mlp(embed, labels)
 
-def loop_dataset(g_list, classifier, sample_idxes, optimizer=None, bsize=cmd_args.batch_size):
+def loop_dataset(g_list, classifier, sample_idxes, optimizer=None, bsize=cmd_args.batch_size, scheduler=None):
     total_loss = []
     total_iters = (len(sample_idxes) + (bsize - 1) * (optimizer is None)) // bsize
     pbar = tqdm(range(total_iters), unit='batch')
@@ -149,4 +149,7 @@ def loop_dataset(g_list, classifier, sample_idxes, optimizer=None, bsize=cmd_arg
         assert n_samples == len(sample_idxes)
     total_loss = np.array(total_loss)
     avg_loss = np.sum(total_loss, 0) / n_samples
+
+    #if not classifier.train:
+    #    scheduler.step(avg_loss)
     return avg_loss, acc
