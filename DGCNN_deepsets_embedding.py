@@ -26,8 +26,8 @@ class DGCNNDeepSets(nn.Module):
         self.output_dim = output_dim
         self.num_node_feats = num_node_feats
         self.num_edge_feats = num_edge_feats
-        self.k = k
-        self.total_latent_dim = sum(latent_dim)  #latent_dim[-1] #
+        self.k = int(k)
+        self.total_latent_dim = sum(latent_dim) #sum(latent_dim)  #latent_dim[-1] #
         conv1d_kws[0] = self.total_latent_dim
 
         self.conv_params = nn.ModuleList()
@@ -50,8 +50,8 @@ class DGCNNDeepSets(nn.Module):
         weights_init(self)
 
         #Deep sets
-        self.the_phi = SmallPhi(input_size=self.total_latent_dim, output_size=self.dense_dim)
-        self.the_rho = SmallRho(input_size=self.dense_dim, output_size=self.output_dim)
+        self.the_phi = SmallPhi(input_size=self.total_latent_dim, output_size=self.k)
+        self.the_rho = SmallRho(input_size=self.k, output_size=self.output_dim)
         self.model = InvariantModel(phi=self.the_phi, rho=self.the_rho).cuda()
 
 
@@ -93,6 +93,7 @@ class DGCNNDeepSets(nn.Module):
         cur_message_layer = node_feat
         cat_message_layers = []
         while lv < len(self.latent_dim):
+            #original=Variable(cur_message_layer)
             n2npool = gnn_spmm(n2n_sp, cur_message_layer) + cur_message_layer  # Y = (A + I) * X
             node_linear = self.conv_params[lv](n2npool)  # Y = Y * W
             normalized_linear = node_linear.div(node_degs)  # Y = D^-1 * Y

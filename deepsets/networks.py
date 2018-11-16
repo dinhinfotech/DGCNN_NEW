@@ -14,7 +14,7 @@ class InvariantModel(nn.Module):
         super().__init__()
         self.phi = phi
         self.rho = rho
-
+        self.dropout1=  nn.Dropout(p=0.2)
     def forward(self, x: NetIO) -> NetIO:
         # compute the representation for each data point
         x = self.phi.forward(x)
@@ -26,7 +26,7 @@ class InvariantModel(nn.Module):
         x = torch.sum(x, dim=1, keepdim=True) #sum
         x=x.reshape((x.size()[0],x.size()[2]))
         #print("x size after sum",x.size())
-
+        #x=self.dropout(x)
 
         # compute the output
         out = self.rho.forward(x)
@@ -63,7 +63,7 @@ class SmallMNISTCNNPhi(nn.Module):
         return x
 
 class SmallPhi(nn.Module):
-    def __init__(self, input_size: int, output_size: int = 1, hidden_size: int = 1):
+    def __init__(self, input_size: int, output_size: int = 1, hidden_size: int = 1, number_of_layers=1):
         super().__init__()
         self.input_size = input_size
         self.output_size = output_size
@@ -75,7 +75,7 @@ class SmallPhi(nn.Module):
         #self.fc1 = nn.Linear(self.input_size, self.input_size+step)
         #self.fc2 = nn.Linear(self.input_size+step, self.output_size)
         self.fc1 = nn.Linear(self.input_size, self.output_size)
-        #self.fc2 = nn.Linear(self.input_size+step, self.output_size)
+        self.fc2 = nn.Linear(self.output_size+step, self.output_size)
         #self.fc3 = nn.Linear(self.input_size+(2*step), self.output_size)
 
         self.dropout1=  nn.Dropout(p=0.2)
@@ -87,7 +87,7 @@ class SmallPhi(nn.Module):
     def forward(self, x: NetIO) -> NetIO:
         #x = self.dropout1(x)
         x = F.relu(self.fc1(x))
-        x = self.dropout2(x)
+        #x = self.dropout2(x)
 
         #x = F.relu(self.fc2(x))
         #x = self.dropout3(x)
@@ -122,10 +122,11 @@ class SmallRho(nn.Module):
 
     def forward(self, x: NetIO) -> NetIO:
         #x = F.dropout(x)
-        #x = F.relu(self.fc1(x))
-        #x = self.dropout1(x)
-        x = F.relu(self.fc1(x))
         x = self.dropout2(x)
+        x = F.relu(self.fc1(x))
+        #x = self.dropout3(x) #good results without this dropout
+        #x = F.relu(self.fc1(x))
+        #x = self.dropout2(x)
 
         #x = self.dropout2(x)
 

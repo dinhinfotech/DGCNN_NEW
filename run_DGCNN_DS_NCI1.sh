@@ -7,9 +7,9 @@ gm=DGCNN_DS  # model: DGCNN, DGCNN_RNN, DGCNN_DS, DGCNN_LSTM,
 gpu_or_cpu=gpu
 GPU=0  # select the GPU number
 CONV_SIZE="32-32-32"
-sortpooling_k=0.6  # If k <= 1, then k is set to an integer so that k% of graphs have nodes less than this integer
+sortpooling_k=512  # If k <= 1, then k is set to an integer so that k% of graphs have nodes less than this integer
 FP_LEN=128  # final dense layer's input dimension, decided by data
-n_hidden=96  #97 final dense layer's hidden size
+n_hidden=97  #97 final dense layer's hidden size
 bsize=50  # batch size
 dropout=True
 learning_rate=0.001
